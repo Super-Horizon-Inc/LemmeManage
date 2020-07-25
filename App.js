@@ -1,17 +1,18 @@
+import 'react-native-gesture-handler';
 //import { StatusBar } from 'expo-status-bar';
 import React, { Component } from 'react';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
-import HomeScreen from './screens/Home.js';
+import AuthenticationScreen from './screens/Authentication.js';
+import DrawerNavigator from './screens/DrawerNavigator.js';
 
 
 const SwitchNavigator = createSwitchNavigator(
     {
-        HomeScreen: {
-            screen: HomeScreen
-        }
-    },
+        AuthenticationScreen: {screen: AuthenticationScreen},
+        DrawerNavigator: {screen: DrawerNavigator}        
+    },   
     {
-        initialRouteName: "HomeScreen"
+        initialRouteName: "AuthenticationScreen"
     }
 );
 
