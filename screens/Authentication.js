@@ -6,6 +6,7 @@ import Logo from './Logo.js';
 import Confirm from './Confirm.js';
 import ValidationComponent from 'react-native-form-validator';
 import { LinearGradient } from 'expo-linear-gradient';
+import AuthService from '../services/AuthService.js';
 
 const styles = StyleSheet.create({
     container: {
@@ -51,46 +52,30 @@ export default class Authentication extends ValidationComponent {
         this.setState({selectedIndex});
 
         if(selectedIndex == 0) {
-
             this.setState({ 
                 buttonText: "Sign In"
             });
-
         }
         else 
         {
-
             this.setState({ 
                 buttonText: "Sign Up"
             });
-
         }
-
+        
     };
 
-    lemmeManage = () => {
+    lemmeManage = async () => {
 
-        const url = this.state.selectedIndex == 0 ? "https://b50ef533728c.ngrok.io/lemme/user/signin" : "https://b50ef533728c.ngrok.io/lemme/user/signup";
-
-        fetch(url, {
-                method: 'POST',
-                headers: {
-                    Accept : 'application/json',
-                    'Content-Type' : 'application/json'
-                },
-                body: JSON.stringify({username:this.state.username, password:this.state.password})
-                })
-                .then(response => 
-                    response.json()            
-                )
-                .then(json => {
-                    
-                    this.props.navigation.navigate("DrawerNavigator", {customerList: json.customers});
-
-                })
-                .catch(error => {                   
-                    console.error(error);
-                });
+        let authService = new AuthService(this.state.username, this.state.password);
+        
+        let auth = this.state.selectedIndex == 0
+        ? 
+            await authService.signin()
+        :
+            await authService.signup();
+        
+        await this.props.navigation.navigate("DrawerNavigator", {customerList: auth, switchNavigation: this.props.navigation});
 
     }
 
