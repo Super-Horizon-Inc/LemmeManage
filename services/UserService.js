@@ -10,7 +10,7 @@ export default class UserService {
 
         const header = await AuthHeader();
         
-        await fetch("https://1433e97e5482.ngrok.io/lemme/user/setting", {
+        await fetch("https://cccea34872d6.ngrok.io/lemme/user/setting", {
             method: 'PUT',
             headers: {
                 Accept : 'application/json',

@@ -80,8 +80,13 @@ export default class Authentication extends ValidationComponent {
         :
             await authService.signup();
         
-            await this.props.navigation.navigate("DrawerNavigator", {customerList: auth.customers, discount: auth.discount, switchNavigation: this.props.navigation});
+        await ((auth.accessToken != null) ? this.props.navigation.navigate("DrawerNavigator", {customerList: auth.customers, discount: auth.discount, switchNavigation: this.props.navigation}) 
+            : this.setState({confirmText : "\nSomething went wrong.\n Please try again."}));
 
+        setTimeout(() => {
+            this.setState({isConfirmVisible: false});
+        }, 5000);
+            
     }
 
 
