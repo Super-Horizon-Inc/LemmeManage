@@ -3,6 +3,7 @@ import { View, Text, TextInput } from 'react-native';
 import { Button } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
+import UserService from '../services/UserService.js';
 
 
 export default class Setting extends Component {
@@ -11,14 +12,30 @@ export default class Setting extends Component {
 
         super(props);    
 
+        const currentDiscount = this.props.route.params.discount;
+
         this.state = {
             isVisitingTime: true,
+            discount: {by:currentDiscount.by, type:currentDiscount.type, amount:currentDiscount.amount, visitTimes:currentDiscount.visitTimes}
         }
     }
 
     setChecked = (value) => {
         this.setState({checked: value});
     }
+
+    save = () => {
+        new UserService().storeSetting(this.state.discount);
+    }
+
+    byPlaceholder = () => {
+        switch(parseInt(this.state.discount.by)) {
+            case 0: return 'Visiting Times'; break;
+            case 1: return 'Date of Birth'; break;
+            case 2: return 'Both'; break;
+        }
+    }
+
 
     render () {
 
@@ -32,12 +49,13 @@ export default class Setting extends Component {
                         <Text style={{top: 35, marginLeft:30, marginRight:30, color:'white'}}>Discount by:</Text>
                         <DropDownPicker
                             items={[
-                                {label: 'Visiting Times', value: 'vt'},
-                                {label: 'Date of Birth', value: 'db'},
-                                {label: 'Both', value: 'both'},
+                                {label: 'Visiting Times', value: 0},
+                                {label: 'Date of Birth', value: 1},
+                                {label: 'Both', value: 2}
                             ]}
-                            defaultIndex={0}
-                            placeholder="Visting Times"
+                            defaultIndex={parseInt(this.state.discount.by)}
+                            placeholder={this.byPlaceholder()}
+                            
                             dropDownMaxHeight={150}
                             style={{marginTop:20}}
                             dropDownStyle={{marginTop:20}}                   
@@ -49,7 +67,7 @@ export default class Setting extends Component {
                             arrowSize={22}
                             arrowColor={'#043030FF'}
                             onChangeItem={item => {
-                                if (item.value !== "db") {
+                                if (item.value !== 1) {
                                     this.setState({
                                         isVisitingTime: true,
                                     })
@@ -59,7 +77,9 @@ export default class Setting extends Component {
                                         isVisitingTime: false,
                                     })
                                 }
-                                console.log("aaa")
+                                this.setState({
+                                    discount: {by: item.value, type: this.state.discount.type, amount: this.state.discount.amount, visitTimes: this.state.discount.visitTimes}
+                                })
                             }}
                         />
 
@@ -70,20 +90,28 @@ export default class Setting extends Component {
                                             top:-15, borderTopLeftRadius:5, borderBottomLeftRadius:5,  
                                             borderTopRightRadius: 5, borderBottomRightRadius:5,
                                             color:'#043030FF', textAlign:'center'}}
+                                    value={this.state.discount.visitTimes.toString()}
                                     keyboardType="numeric"
                                     returnKeyType="done"
-                                    editable={this.state.isVisitingTime}>0</TextInput>
+                                    editable={this.state.isVisitingTime}
+                                    onChangeText={
+                                        (value) => {
+                                            this.setState({
+                                                discount: {by: this.state.discount.by, type: this.state.discount.type, amount: this.state.discount.amount, visitTimes: value}
+                                            })
+                                        }
+                                    }></TextInput>
                         <Text style={{width: 80, marginLeft:30, marginRight:30, color:'white'}}>Times</Text>
                     </View>
                     <View style={{ flexDirection:'row', width:'95%', height: 100, marginLeft:10, top:-30}}>
                         <Text numberOfLines={2} style={{width: 80, marginLeft:30, marginRight:30, color:'white'}}>Discount Amount:</Text>
                         <DropDownPicker
                             items={[
-                                {label: '$', value: 'item1'},
-                                {label: '%', value: 'item2'},
+                                {label: '$', value: 0},
+                                {label: '%', value: 1},
                             ]}
-                            defaultIndex={0}
-                            placeholder="$"
+                            defaultIndex={this.state.discount.type}
+                            placeholder={this.state.discount.type == 0 ? "$" : "%"}
                             dropDownMaxHeight={150}
                             style={{borderTopRightRadius: 0, borderBottomRightRadius: 0, marginRight:2,
                                     marginTop:-10}}
@@ -95,19 +123,30 @@ export default class Setting extends Component {
                             placeholderStyle={{justifyContent: 'flex-start'}}                  
                             showArrow={false}
                             onChangeItem={item => 
-                                console.log(item.label, item.value)
+                                this.setState({
+                                    discount: {by: this.state.discount.by, type: item.value, amount: this.state.discount.amount, visitTimes: this.state.discount.visitTimes}
+                                })
                             }
                         />
                         <TextInput style={{backgroundColor:'white', height:'50%', width:'37%',
                                             top:-10, borderTopRightRadius: 5, borderBottomRightRadius:5,
                                             color:'#043030FF',
                                             textAlign:"center"}}
+                                    value={this.state.discount.amount.toString()}
                                     keyboardType="numeric"
-                                    returnKeyType="done">0</TextInput>
+                                    returnKeyType="done"
+                                    onChangeText={
+                                        (value) => {
+                                            this.setState({
+                                                discount: {by: this.state.discount.by, type: this.state.discount.type, amount: value, visitTimes: this.state.discount.visitTimes}
+                                            })
+                                        }
+                                    }
+                                    ></TextInput>
                     </View> 
 
                     <View >
-                        <Button buttonStyle={{backgroundColor:'#376363FF'}} title='Save' onPress={() => {console.log("Setting is clicked.")}} />
+                        <Button buttonStyle={{backgroundColor:'#376363FF'}} title='Save' onPress={() => this.save()} />
                     </View>
                     
                 </View> 
