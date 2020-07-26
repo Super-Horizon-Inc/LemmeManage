@@ -66,6 +66,11 @@ export default class Authentication extends ValidationComponent {
     };
 
     lemmeManage = async () => {
+        
+        this.setState({
+            isConfirmVisible: true,                    
+            confirmText: "\nLogging in ..."
+        });
 
         let authService = new AuthService(this.state.username, this.state.password);
         
@@ -75,7 +80,7 @@ export default class Authentication extends ValidationComponent {
         :
             await authService.signup();
         
-        await this.props.navigation.navigate("DrawerNavigator", {customerList: auth, switchNavigation: this.props.navigation});
+            await this.props.navigation.navigate("DrawerNavigator", {customerList: auth.customers, discount: auth.discount, switchNavigation: this.props.navigation});
 
     }
 

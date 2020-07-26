@@ -4,12 +4,14 @@ import React, { Component } from 'react';
 import { createSwitchNavigator, createAppContainer } from 'react-navigation';
 import AuthenticationScreen from './screens/Authentication.js';
 import DrawerNavigator from './screens/DrawerNavigator.js';
+//import HomeScreen from './screens/Home.js';
 
 
 const SwitchNavigator = createSwitchNavigator(
     {
         AuthenticationScreen: {screen: AuthenticationScreen},
-        DrawerNavigator: {screen: DrawerNavigator}        
+        DrawerNavigator: {screen: DrawerNavigator},
+        //HomeScreen: {screen: HomeScreen}        
     },   
     {
         initialRouteName: "AuthenticationScreen"

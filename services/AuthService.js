@@ -8,7 +8,7 @@ export default class AuthService {
     }
 
     signin = () => {
-        const customers = fetch("https://904e18df5acf.ngrok.io/lemme/user/signin", {
+        const customers = fetch("https://1433e97e5482.ngrok.io/lemme/user/signin", {
             method: 'POST',
             headers: {
                 Accept : 'application/json',
@@ -21,7 +21,7 @@ export default class AuthService {
             )
             .then(json => {
                 AsyncStorage.setItem('user', json.accessToken);
-                return json.customers;
+                return json;
 
             })
             .catch(error => {                   
@@ -32,7 +32,7 @@ export default class AuthService {
     }
 
     signup = () => {
-        const customers = fetch("https://904e18df5acf.ngrok.io/lemme/user/signup", {
+        const customers = fetch("https://1433e97e5482.ngrok.io/lemme/user/signup", {
             method: 'POST',
             headers: {
                 Accept : 'application/json',
@@ -45,7 +45,7 @@ export default class AuthService {
             )
             .then(json => {
                 AsyncStorage.setItem('user', json.accessToken);
-                return json.customers;
+                return json;
 
             })
             .catch(error => {                   
@@ -61,7 +61,7 @@ export default class AuthService {
     logout = () => {
         AsyncStorage.removeItem('user');
 
-        fetch("https://904e18df5acf.ngrok.io/lemme/user/logout", {
+        fetch("https://1433e97e5482.ngrok.io/lemme/user/logout", {
             method: 'GET',
             headers: {
                 Accept : 'application/json',

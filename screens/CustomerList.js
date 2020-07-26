@@ -194,7 +194,6 @@ export default class CustomerList extends Component {
                     </ScrollView>
                 </SafeAreaView>
             </LinearGradient> 
-
         )
     }
 }
