@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import { View, SafeAreaView, ScrollView, Text, Dimensions, StyleSheet } from 'react-native';
-import { Button } from 'react-native-elements';
 import { DataTable } from 'react-native-paper'; 
 import CustomerInformation from './CustomerInformation.js';
 import Confirm from './Confirm.js';
@@ -124,9 +123,9 @@ export default class CustomerList extends Component {
         return dim.height >= dim.width;
     };
 
-    cancel = () => {
-        this.props.navigation.navigate("AuthenticationScreen");
-    }
+    // cancel = () => {
+    //     this.props.navigation.navigate("AuthenticationScreen");
+    // }
 
     showModal = () => {
         this.setState({ isCustInfoVisible: true });

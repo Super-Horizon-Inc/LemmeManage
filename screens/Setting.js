@@ -4,6 +4,7 @@ import { Button } from 'react-native-elements';
 import { LinearGradient } from 'expo-linear-gradient';
 import DropDownPicker from 'react-native-dropdown-picker';
 import UserService from '../services/UserService.js';
+import ConfirmSetting from './ConfirmSetting.js';
 
 
 export default class Setting extends Component {
@@ -16,16 +17,14 @@ export default class Setting extends Component {
 
         this.state = {
             isVisitingTime: true,
-            discount: {by:currentDiscount.by, type:currentDiscount.type, amount:currentDiscount.amount, visitTimes:currentDiscount.visitTimes}
+            discount: {by:currentDiscount.by, type:currentDiscount.type, amount:currentDiscount.amount, visitTimes:currentDiscount.visitTimes},
+            isSettingVisible: false,
+            settingText:"",
         }
     }
 
     setChecked = (value) => {
         this.setState({checked: value});
-    }
-
-    save = () => {
-        new UserService().storeSetting(this.state.discount);
     }
 
     byPlaceholder = () => {
@@ -34,6 +33,38 @@ export default class Setting extends Component {
             case 1: return 'Date of Birth'; break;
             case 2: return 'Both'; break;
         }
+    }
+
+    showConfirmSetting = () =>  {
+        this.setState({isSettingVisible: true});
+    }
+
+    hideConfirmSetting = () =>  {
+        this.setState({
+            isSettingVisible: false,
+            settingText: ""
+        });
+    }
+
+    saveSetting = async (password) => {
+        //this.hideConfirmSetting();
+        const message = await new UserService().storeSetting(this.state.discount, password);
+        
+        this.setState({
+            isSettingVisible: true,
+            settingText: message
+        })
+
+        if (message.indexOf('Setting saved successfully.') >= 0) {
+        
+            setTimeout(() => {
+                this.setState({
+                    isSettingVisible: false,
+                    settingText: ""
+                });
+            }, 3000);
+        }
+
     }
 
 
@@ -45,6 +76,10 @@ export default class Setting extends Component {
                 <View style={{ height: '80%', top:150}}>
                     
                     <View style={{flexDirection:'row', marginLeft:10, width: '95%', height:'40%'}}>
+
+                        <View style={{ height:0 }}>
+                            <ConfirmSetting isVisible={this.state.isSettingVisible} text={this.state.settingText} done={this.saveSetting} cancel={this.hideConfirmSetting} />
+                        </View>
 
                         <Text style={{top: 35, marginLeft:30, marginRight:30, color:'white'}}>Discount by:</Text>
                         <DropDownPicker
@@ -100,7 +135,8 @@ export default class Setting extends Component {
                                                 discount: {by: this.state.discount.by, type: this.state.discount.type, amount: this.state.discount.amount, visitTimes: value}
                                             })
                                         }
-                                    }></TextInput>
+                                    }
+                        ></TextInput>
                         <Text style={{width: 80, marginLeft:30, marginRight:30, color:'white'}}>Times</Text>
                     </View>
                     <View style={{ flexDirection:'row', width:'95%', height: 100, marginLeft:10, top:-30}}>
@@ -142,11 +178,11 @@ export default class Setting extends Component {
                                             })
                                         }
                                     }
-                                    ></TextInput>
+                        ></TextInput>
                     </View> 
 
                     <View >
-                        <Button buttonStyle={{backgroundColor:'#376363FF'}} title='Save' onPress={() => this.save()} />
+                        <Button buttonStyle={{backgroundColor:'#376363FF'}} containerStyle={{width:'60%', alignSelf: 'center'}} title='Save' onPress={() => this.showConfirmSetting()} />
                     </View>
                     
                 </View> 

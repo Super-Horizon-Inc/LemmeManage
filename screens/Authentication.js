@@ -75,10 +75,8 @@ export default class Authentication extends ValidationComponent {
         let authService = new AuthService(this.state.username, this.state.password);
         
         let auth = this.state.selectedIndex == 0
-        ? 
-            await authService.signin()
-        :
-            await authService.signup();
+        ? await authService.signin()
+        : await authService.signup();
         
         await ((auth.accessToken != null) ? this.props.navigation.navigate("DrawerNavigator", {customerList: auth.customers, discount: auth.discount, switchNavigation: this.props.navigation}) 
             : this.setState({confirmText : "\nSomething went wrong.\n Please try again."}));

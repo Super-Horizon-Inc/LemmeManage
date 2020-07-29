@@ -1,36 +1,31 @@
-import AuthHeader from './AuthHeader.js';
+import AuthService from './AuthService.js';
 
 export default class UserService {
 
-    constructor() {
+    constructor() {}
 
-    }
+    storeSetting = async (discount, password) => {
 
-    storeSetting = async (discount) => {
-
-        const header = await AuthHeader();
+        const username = await new AuthService().getCurrentUsername();
         
-        await fetch("https://cccea34872d6.ngrok.io/lemme/user/setting", {
+        return await fetch("https://31df3a354fd7.ngrok.io/lemme/user/auth/setting", {
             method: 'PUT',
             headers: {
                 Accept : 'application/json',
                 'Content-Type' : 'application/json',
-                'Authorization': header.Authorization
             },
-            body: JSON.stringify(discount)
+            body: JSON.stringify({username:username, password:password, discount:discount})
             })
             .then(response => 
-                response.text()            
+                response.json()          
             )
-            .then(text => {
-                console.log(text);
-
+            .then(json => {
+                //console.log(json);
+                return json.message;
             })
             .catch(error => {                   
                 console.error(error);
             });
     }
 
-    // getQualifiedCustomers = (discount) => {
-    // }
 }
