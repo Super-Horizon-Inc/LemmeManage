@@ -7,8 +7,14 @@ export default class AuthService {
         this.password = password;
     }
 
+    getCurrentUsername = async () => {
+        return await AsyncStorage.getItem('username');
+    }
+
+
     signin = () => {
-        const result = fetch("https://cccea34872d6.ngrok.io/lemme/user/signin", {
+        
+        const result = fetch("https://31df3a354fd7.ngrok.io/lemme/user/auth/signin", {
             method: 'POST',
             headers: {
                 Accept : 'application/json',
@@ -22,7 +28,8 @@ export default class AuthService {
             .then(json => {
 
                 if (json.accessToken != null) {
-                    AsyncStorage.setItem('user', json.accessToken);                      
+                    AsyncStorage.setItem('user', json.accessToken);
+                    AsyncStorage.setItem('username', json.username);                     
                 }
                 return json;
                 
@@ -35,7 +42,7 @@ export default class AuthService {
     }
 
     signup = () => {
-        const customers = fetch("https://cccea34872d6.ngrok.io/lemme/user/signup", {
+        const customers = fetch("https://31df3a354fd7.ngrok.io/lemme/user/auth/signup", {
             method: 'POST',
             headers: {
                 Accept : 'application/json',
@@ -49,7 +56,8 @@ export default class AuthService {
             .then(json => {
 
                 if (json.accessToken != null) {
-                    AsyncStorage.setItem('user', json.accessToken);                      
+                    AsyncStorage.setItem('user', json.accessToken);
+                    AsyncStorage.setItem('username', json.username);                   
                 }
                 return json;
 
@@ -60,24 +68,26 @@ export default class AuthService {
         return customers;
     }
 
-    getCurrentUser = async () => {
-        return await AsyncStorage.getItem('user');
-    }
 
-    logout = () => {
-        AsyncStorage.removeItem('user');
+    logout = async (input) => {
 
-        fetch("https://cccea34872d6.ngrok.io/lemme/user/logout", {
-            method: 'GET',
+        return await fetch("https://31df3a354fd7.ngrok.io/lemme/user/auth/logout", {
+            method: 'POST',
             headers: {
                 Accept : 'application/json',
-                'Content-Type' : 'application/json'
+                'Content-Type' : 'application/json',
             },
+            body: JSON.stringify(input)
             })
             .then(response => 
-                response.text()
+                response.json()
             )
-            .then(text => {
+            .then( json => {                
+                if (json.message.indexOf('Logout successfully.') >= 0) {
+                    AsyncStorage.removeItem('user');
+                    AsyncStorage.removeItem('username');
+                }               
+                return json.message; 
             })
             .catch(error => {                   
                 console.error(error);

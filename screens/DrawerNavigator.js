@@ -44,7 +44,7 @@ export default class DrawerNavigator extends Component {
                                         drawerIcon: ( { focused, size }) => (<Icon name={"gear"} size={20} color='#043030FF'/> )
                                     }} 
                     />
-                    <Drawer.Screen name="Logout" component={Logout} initialParams={{ switchNavigation: this.props.navigation.state.params.switchNavigation, drawerNavigation: this.props.navigation}}
+                    <Drawer.Screen name="Logout" component={Logout} initialParams={{ switchNavigation: this.props.navigation.state.params.switchNavigation }}
                                     options={{
                                         title: 'Logout',
                                         drawerIcon: ( { focused, size }) => (<Icon name={"sign-out"} size={20} color='#043030FF'/> )
