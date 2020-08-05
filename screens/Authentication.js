@@ -62,28 +62,57 @@ export default class Authentication extends ValidationComponent {
                 buttonText: "Sign Up"
             });
         }
-        
+       
     };
 
     lemmeManage = async () => {
-        
-        this.setState({
-            isConfirmVisible: true,                    
-            confirmText: "\nLogging in ..."
-        });
 
-        let authService = new AuthService(this.state.username, this.state.password);
-        
-        let auth = this.state.selectedIndex == 0
-        ? await authService.signin()
-        : await authService.signup();
-        
-        await ((auth.accessToken != null) ? this.props.navigation.navigate("DrawerNavigator", {customerList: auth.customers, discount: auth.discount, switchNavigation: this.props.navigation}) 
-            : this.setState({confirmText : "\nSomething went wrong.\n Please try again."}));
+        this.validate({
+            username: {email: true},
+            password: {minlength:6, maxlength:40}
+        })
 
-        setTimeout(() => {
-            this.setState({isConfirmVisible: false});
-        }, 5000);
+        if(!this.isFieldInError("username") && !this.isFieldInError("password")) {
+
+            try {
+                this.setState({
+                    isConfirmVisible: true,                    
+                    confirmText: "\nLogging in ..."
+                });
+
+                let authService = new AuthService(this.state.username, this.state.password);
+                
+                let auth = this.state.selectedIndex == 0
+                ? await authService.signin()
+                : await authService.signup();
+                
+                await ((auth.accessToken != null) 
+                ? this.props.navigation.navigate("DrawerNavigator", {customerList: auth.customers, discount: auth.discount, switchNavigation: this.props.navigation}) 
+                : this.setState({confirmText : "\nSomething went wrong.\n Please try again."}));
+
+                setTimeout(() => {
+                    this.setState({
+                        isConfirmVisible: false,
+                        username: "",
+                        password: "",
+                    });
+                }, 5000);
+            }
+            catch(error) {
+                this.setState({
+                    isConfirmVisible: true,                    
+                    confirmText: "Sorry! Something went wrong.",
+                    username: "",
+                    password: "",
+                });
+                setTimeout(() => {
+                    this.setState({
+                        isConfirmVisible: false, 
+                        confirmText: "",
+                    });
+                }, 5000);
+            }
+        }
             
     }
 
@@ -115,14 +144,14 @@ export default class Authentication extends ValidationComponent {
                                         leftIcon={<Icon name={"user"} size={24} color='white' />}
                                         onChangeText={ text => this.setState({username: text}) } 
                                         value={this.state.username}
-                                        //errorMessage={this.isFieldInError('email') ? this.getErrorMessages() : ""} 
+                                        errorMessage={this.isFieldInError('username') ? this.getErrorsInField('username') : ""}
                                         />
                                 <Input containerStyle={styles.input} labelStyle={{color: 'white'}} label={"Password"}
                                         placeholder={"*******"} inputStyle={{color:'white'}} secureTextEntry={true}
                                         leftIcon={<Icon name={"lock"} size={26} color='white' />}
                                         onChangeText={ text => this.setState({password: text}) } 
                                         value={this.state.password}
-                                        //errorMessage={this.isFieldInError('email') ? this.getErrorMessages() : ""} 
+                                        errorMessage={this.isFieldInError('password') ? "The field \"password\" length must be greater than 6" : ""}
                                         />
                             </View>
                                 
