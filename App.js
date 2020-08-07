@@ -9,7 +9,7 @@ import DrawerNavigator from './screens/DrawerNavigator.js';
 const SwitchNavigator = createSwitchNavigator(
     {
         AuthenticationScreen: {screen: AuthenticationScreen},
-        DrawerNavigator: {screen: DrawerNavigator}    
+        DrawerNavigator: {screen: DrawerNavigator}
     },   
     {
         initialRouteName: "AuthenticationScreen"
