@@ -8,7 +8,7 @@ export default class UserService {
 
         const username = await new AuthService().getCurrentUsername();
         
-        return await fetch("https://570b7dd9b158.ngrok.io/lemme/user/auth/setting", {
+        return await fetch("https://f4329af93339.ngrok.io/lemme/user/auth/setting", {
             method: 'PUT',
             headers: {
                 Accept : 'application/json',
